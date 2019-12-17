@@ -58,6 +58,7 @@ module jesd204_rx_lane_64b #(
 
   output buffer_ready_n,
   input buffer_release_n,
+  output emb_lock,
 
   input cfg_disable_scrambler,
   input [1:0] cfg_header_mode,  // 0 - CRC12 ; 1 - CRC3; 2 - FEC; 3 - CMD
@@ -184,6 +185,7 @@ elastic_buffer #(
 );
 
 assign buffer_ready_n = emb_lock_n;
+assign emb_lock = ~emb_lock_n;
 
 /* Reorder octets LSB first */
 genvar i;

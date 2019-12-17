@@ -377,6 +377,22 @@ end
 
 if (MODE_64B66B_8B10B_N == 1) begin : mode_64b66b
 
+wire [NUM_LANES-1:0] emb_lock;
+
+jesd204_rx_ctrl_64b  #(
+  .NUM_LANES(NUM_LANES)
+) i_jesd204_rx_ctrl_64b (
+  .clk(clk),
+  .reset(reset),
+
+  .cfg_lanes_disable(cfg_lanes_disable),
+
+  .phy_block_sync(phy_block_sync_r),
+  .emb_lock(emb_lock),
+
+  .status_state(status_ctrl_state)
+);
+
 for (i = 0; i < NUM_LANES; i = i + 1) begin: gen_lane
 
   localparam D_START = i * DATA_PATH_WIDTH*8;
@@ -404,6 +420,8 @@ for (i = 0; i < NUM_LANES; i = i + 1) begin: gen_lane
     .buffer_release_n(buffer_release_n),
     .buffer_ready_n(buffer_ready_n[i]),
 
+    .emb_lock(emb_lock[i]),
+
     .ctrl_err_statistics_reset(ctrl_err_statistics_reset),
     .ctrl_err_statistics_mask(ctrl_err_statistics_mask[6:3]),
     .status_err_statistics_cnt(status_err_statistics_cnt[32*i+31:32*i]),
@@ -412,10 +430,6 @@ for (i = 0; i < NUM_LANES; i = i + 1) begin: gen_lane
   );
 
 end
-
-// Link considered synced when all lanes are in lock phase therefore the
-// receive buffer got released.
-assign status_ctrl_state = {2{~buffer_release_n}};
 
 // Assign unused outputs 
 assign sync = 'b0;

@@ -52,6 +52,7 @@ adi_ip_files jesd204_rx [list \
   "jesd204_rx_header.v" \
   "jesd204_rx_cgs.v" \
   "jesd204_rx_ctrl.v" \
+  "jesd204_rx_ctrl_64b.v" \
   "elastic_buffer.v" \
   "error_monitor.v" \
   "jesd204_ilas_monitor.v" \
